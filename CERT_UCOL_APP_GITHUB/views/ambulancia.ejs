@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Servicio de Ambulancia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <!-- 🚨 BLOQUE DE ALERT -->
+    <% if (flash) { %>
+      <div class="alert alert-<%= flash.type %> alert-dismissible fade show" role="alert">
+        <%= flash.message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+    <!-- 🚨 FIN BLOQUE DE ALERT -->
+
+    <div class="card shadow-lg">
+      <div class="card-header bg-success text-white text-center">
+        <h2>Registro de Servicio de Ambulancia</h2>
+      </div>
+      <div class="card-body">
+
+        <% const FD  = (typeof formData !== 'undefined' && formData) ? formData : {}; %>
+        <% const ERR = (typeof errors   !== 'undefined' && errors)   ? errors   : [];  %>
+
+        <% if (ERR.length) { %>
+          <div class="alert alert-danger" role="alert">
+            <strong>Corrige los siguientes puntos:</strong>
+            <ul class="mb-0">
+              <% ERR.forEach(e => { %><li><%= e.msg %></li><% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+        <form action="/guardar-ambulancia" method="POST" novalidate>
+          <% if (typeof csrfToken !== 'undefined') { %>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <% } %>
+
+          <!-- folio viene del servidor -->
+          <input type="hidden" name="folio" value="<%= typeof folio !== 'undefined' ? folio : (FD.folio || '') %>">
+
+          <div class="mb-3">
+            <label class="form-label">Nº Folio:</label>
+            <input type="text" class="form-control" 
+                   value="<%= typeof folio !== 'undefined' ? folio : (FD.folio || '') %>" readonly>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Hora de salida:</label>
+              <input type="time" class="form-control" name="salida" required value="<%= FD.salida || '' %>">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Hora de llegada:</label>
+              <input type="time" class="form-control" name="llegada" required value="<%= FD.llegada || '' %>">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha:</label>
+            <input type="date" class="form-control" name="fecha"
+                   value="<%= (typeof hoy !== 'undefined' && hoy) ? hoy : (FD.fecha || new Date().toISOString().split('T')[0]) %>"
+                   required>
+          </div>
+
+          <!-- Unidad de uso -->
+          <div class="mb-3">
+            <label class="form-label">Unidad de uso:</label>
+            <% const u = FD.unidad || ''; %>
+            <select class="form-select" name="unidad" required>
+              <option value="" disabled <%= !u ? 'selected' : '' %>>Selecciona…</option>
+              <% (ambulanciasOptions || []).forEach(un => { %>
+                <option value="<%= un %>" <%= u === un ? 'selected' : '' %>><%= un %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Radio operador:</label>
+            <input type="text" class="form-control" name="radio" required value="<%= FD.radio || '' %>">
+          </div>
+
+          <div class="card bg-light p-3">
+            <h4 class="text-success">Datos del Accidente</h4>
+
+            <div class="mb-3">
+              <label class="form-label">Lugar:</label>
+              <input type="text" class="form-control" name="lugar" required value="<%= FD.lugar || '' %>">
+            </div>
+
+            <!-- Tipo de servicio -->
+            <div class="mb-3">
+              <label class="form-label">Tipo de servicio:</label>
+              <% const t = FD.tipo || ''; %>
+              <select class="form-select" name="tipo" required>
+                <option value="" disabled <%= !t ? 'selected' : '' %>>Selecciona…</option>
+                <% (tiposServicioOptions || []).forEach(ts => { %>
+                  <option value="<%= ts %>" <%= t === ts ? 'selected' : '' %>><%= ts %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Solicitado por:</label>
+              <input type="text" class="form-control" name="solicitado" required value="<%= FD.solicitado || '' %>">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Ubicación (opcional):</label>
+              <input type="text" class="form-control" name="ubicacion" value="<%= FD.ubicacion || '' %>">
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a href="/vista" class="btn btn-outline-secondary"> Siguiente </a>
+            <a href="/" class="btn btn-secondary w-100 mt-2">⬅ Menú</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Auto-cerrar alert en 3.5s
+    setTimeout(() => {
+      const el = document.querySelector('.alert.alert-dismissible');
+      if (!el) return;
+      try {
+        const alert = bootstrap.Alert.getOrCreateInstance(el);
+        alert.close();
+      } catch (e) {
+        el.classList.remove('show');
+        el.addEventListener('transitionend', () => el.remove());
+      }
+    }, 3500);
+  </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!-- views/snapshots.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historial de registros</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+  <div class="container my-4">
+
+    <!-- ALERTAS -->
+    <% if (flash) { %>
+      <div class="alert alert-<%= flash.type %> alert-dismissible fade show" role="alert">
+        <%= flash.message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <% const isAdmin = currentUser && currentUser.role === 'admin'; %>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="text-success mb-0">
+        <i class="bi bi-clock-history me-2"></i>Historial de registros
+      </h2>
+      <a href="/vista" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Estado general
+      </a>
+    </div>
+
+    <p class="text-muted small">
+      Aquí se muestran los documentos PDF generados con el estado general de pacientes, materiales y servicios.
+    </p>
+
+    <!-- ================= VISTA ESCRITORIO / TABLET (TABLA) ================= -->
+    <div class="card shadow-sm d-none d-md-block">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <span>Registros generados</span>
+        <span class="badge bg-light text-success"><%= (snaps || []).length %></span>
+      </div>
+      <div class="card-body p-2">
+        <div class="table-responsive">
+          <table class="table table-sm table-striped table-hover align-middle mb-0">
+            <thead class="table-success">
+              <tr>
+                <th>#</th>
+                <th>Fecha y hora</th>
+                <th>Archivo</th>
+                <th>Generado por</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (Array.isArray(snaps) && snaps.length) { %>
+                <% snaps.forEach((s, idx) => { 
+                     const creador = s.createdBy || null;
+                     const fecha = s.createdAt ? new Date(s.createdAt) : null;
+                %>
+                  <tr>
+                    <td><%= idx + 1 %></td>
+                    <td>
+                      <% if (fecha) { %>
+                        <%= fecha.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' }) %>
+                        <span class="text-muted small">
+                          • <%= fecha.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' }) %>
+                        </span>
+                      <% } else { %>
+                        —
+                      <% } %>
+                    </td>
+                    <td>
+                      <i class="bi bi-file-earmark-pdf text-danger me-1"></i>
+                      <%= s.fileName || 'Documento PDF' %>
+                    </td>
+                    <td>
+                      <% if (creador) { %>
+                        <strong><%= creador.nombre || creador.username || 'Usuario' %></strong>
+                        <span class="badge bg-outline-secondary text-muted border ms-1">
+                          <i class="bi bi-person-badge me-1"></i>
+                          <%= (creador.role === 'admin' ? 'Admin' : 'Trabajador') %>
+                        </span>
+                      <% } else { %>
+                        <span class="text-muted">No registrado</span>
+                      <% } %>
+                    </td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm" role="group">
+                        <a
+                          href="<%= s.filePath %>"
+                          class="btn btn-outline-primary"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                        <a
+                          href="<%= s.filePath %>"
+                          class="btn btn-outline-success"
+                          download
+                        >
+                          <i class="bi bi-download"></i>
+                        </a>
+
+                        <% if (isAdmin) { %>
+                          <form
+                            action="/snapshots/<%= s._id %>/eliminar"
+                            method="POST"
+                            class="d-inline"
+                            onsubmit="return confirm('¿Eliminar este registro del historial? El PDF también se eliminará del servidor.');"
+                          >
+                            <% if (typeof csrfToken !== 'undefined') { %>
+                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <% } %>
+                            <button class="btn btn-outline-danger">
+                              <i class="bi bi-trash"></i>
+                            </button>
+                          </form>
+                        <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="5" class="text-center text-muted">
+                    Aún no se han generado registros en PDF.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= VISTA MÓVIL (CARDS) ================= -->
+    <div class="d-md-none">
+      <% if (Array.isArray(snaps) && snaps.length) { %>
+        <% snaps.forEach((s, idx) => { 
+             const creador = s.createdBy || null;
+             const fecha = s.createdAt ? new Date(s.createdAt) : null;
+        %>
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title mb-0 text-success">
+                  <i class="bi bi-file-earmark-pdf me-1 text-danger"></i>
+                  Registro <%= idx + 1 %>
+                </h5>
+                <% if (fecha) { %>
+                  <span class="badge bg-light text-muted border">
+                    <%= fecha.toLocaleDateString('es-MX', { day:'2-digit', month:'short' }) %>
+                  </span>
+                <% } %>
+              </div>
+
+              <p class="mb-1 small text-muted">
+                <% if (fecha) { %>
+                  <strong>Generado:</strong>
+                  <%= fecha.toLocaleDateString('es-MX', { day:'2-digit', month:'long', year:'numeric' }) %>
+                  a las
+                  <%= fecha.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' }) %>
+                <% } else { %>
+                  <strong>Generado:</strong> fecha no disponible
+                <% } %>
+              </p>
+
+              <p class="mb-1 small">
+                <strong>Archivo:</strong><br>
+                <span class="text-break"><%= s.fileName || 'Documento PDF' %></span>
+              </p>
+
+              <p class="mb-2 small">
+                <strong>Creado por:</strong><br>
+                <% if (creador) { %>
+                  <%= creador.nombre || creador.username || 'Usuario' %>
+                  <span class="badge bg-outline-secondary text-muted border ms-1">
+                    <i class="bi bi-person-badge me-1"></i>
+                    <%= (creador.role === 'admin' ? 'Admin' : 'Trabajador') %>
+                  </span>
+                <% } else { %>
+                  <span class="text-muted">No registrado</span>
+                <% } %>
+              </p>
+
+              <div class="d-flex flex-wrap gap-2">
+                <a
+                  href="<%= s.filePath %>"
+                  class="btn btn-sm btn-outline-primary flex-fill"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <i class="bi bi-box-arrow-up-right me-1"></i> Ver
+                </a>
+                <a
+                  href="<%= s.filePath %>"
+                  class="btn btn-sm btn-outline-success flex-fill"
+                  download
+                >
+                  <i class="bi bi-download me-1"></i> Descargar
+                </a>
+
+                <% if (isAdmin) { %>
+                  <form
+                    action="/snapshots/<%= s._id %>/eliminar"
+                    method="POST"
+                    class="flex-fill"
+                    onsubmit="return confirm('¿Eliminar este registro del historial? El PDF también se eliminará del servidor.');"
+                  >
+                    <% if (typeof csrfToken !== 'undefined') { %>
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <% } %>
+                    <button class="btn btn-sm btn-outline-danger w-100">
+                      <i class="bi bi-trash me-1"></i> Eliminar
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="card shadow-sm">
+          <div class="card-body text-center text-muted">
+            Aún no se han generado registros en PDF.
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <a href="/" class="btn btn-secondary w-100 mt-3">⬅ Menú principal</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Auto-cerrar alert en 3.5s
+    setTimeout(function () {
+      var el = document.querySelector('.alert.alert-dismissible');
+      if (!el) return;
+      try {
+        var alert = bootstrap.Alert.getOrCreateInstance(el);
+        alert.close();
+      } catch (e) {
+        el.classList.remove('show');
+        el.addEventListener('transitionend', function () { el.remove(); });
+      }
+    }, 3500);
+  </script>
+</body>
+</html>
