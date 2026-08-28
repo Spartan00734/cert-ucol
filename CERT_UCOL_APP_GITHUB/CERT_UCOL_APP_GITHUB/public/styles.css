@@ -1,0 +1,606 @@
+/* 🎨 Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+/* 📌 Título principal */
+h1 {
+    font-size: 2rem;
+    color: #222;
+    margin-bottom: 15px;
+}
+
+/* 📋 Estilos para formularios */
+form {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* 📝 Etiquetas */
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* ✏️ Campos de entrada */
+input, select, textarea {
+    width: 100%;
+    font-size: 1.2rem;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* 📌 Botones */
+button, .btn, .btn-danger {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+/* 🎨 Botón azul */
+.btn {
+    background-color: #007bff;
+    color: white;
+}
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* 🔴 Botón rojo */
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* 📌 Contenedor del menú */
+.menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px;
+    background: #007bff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 📌 Botones del menú */
+.menu a {
+    flex-grow: 1;
+    max-width: 25%;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.menu a:hover {
+    background: #0056b3;
+}
+
+/* 📲 Ajustes para dispositivos móviles */
+@media (max-width: 768px) {
+    body {
+        font-size: 1.2rem;
+        padding: 10px;
+    }
+    h1 {
+        font-size: 1.6rem;
+    }
+    form {
+        max-width: 95%;
+        padding: 15px;
+    }
+    input, select, textarea {
+        font-size: 1rem;
+        padding: 10px;
+    }
+    button {
+        font-size: 1.2rem;
+        padding: 15px;
+    }
+    .menu {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        padding: 10px 0;
+    }
+    .menu a {
+        flex-grow: 1;
+        max-width: 23%;
+        font-size: 1rem;
+        padding: 12px;
+    }
+}
+
+/* 📊 Tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: #007bff;
+    color: white;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* -------------------
+   🎨 Estilos modernos (para index)
+------------------- */
+:root {
+  --bg:#609ba5;
+  --card:#198754;
+  --muted:#ffffff;
+  --accent:#22c55e;
+  --accent-2:#16a34a;
+  --surface:#0b1020;
+  --ring:#1f2937;
+}
+
+/* Top App Bar */
+.appbar {
+  position:sticky; top:0; z-index:10;
+  backdrop-filter: blur(8px);
+  background: rgba(11,16,32,.7);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.appbar .inner {
+  max-width:1000px; margin:0 auto; padding:12px 16px;
+  display:flex; align-items:center; gap:12px; justify-content:space-between;
+}
+.brand {display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.3px}
+/*.brand .logo {
+  width:36px; height:36px; border-radius:10px;
+  background: linear-gradient(135deg,#22c55e,#34d399);
+  display:grid; place-items:center; color:#001b0c; font-weight:900;
+  box-shadow: 0 8px 24px rgba(34,197,94,.35), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.brand small {display:block; font-weight:500; color:var(--muted); letter-spacing:.2px}
+*/
+/* Container base */
+.shell {max-width:1000px; margin:24px auto; padding:0 16px}
+
+/* Cards grid */
+.grid {
+  display:grid; gap:16px;
+  grid-template-columns: repeat(12, 1fr);
+}
+.card {
+  grid-column: span 12;
+  background: radial-gradient(1600px 500px at 50% -400px, rgba(34,197,94,.08), transparent 60%), var(--card);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px; padding:18px;
+  box-shadow: 0 20px 60px rgba(2,6,23,.55), inset 0 1px 0 rgba(255,255,255,.05);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(34,197,94,.35);
+  box-shadow: 0 30px 80px rgba(2,6,23,.65), 0 0 0 1px rgba(34,197,94,.15) inset;
+}
+.card h2 {margin:0 0 6px 0; font-size:18px}
+.card p {margin:0; color:var(--muted); font-size:14px}
+.card .actions {margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
+
+.btn {
+  appearance:none; border:none; cursor:pointer; user-select:none;
+  padding:10px 14px; border-radius:12px; font-weight:600; letter-spacing:.2px;
+  background:#101828; color:#e5e7eb; border:1px solid rgba(255,255,255,.08);
+  transition: transform .15s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.btn:hover {transform:translateY(-1px); border-color:rgba(255,255,255,.2)}
+.btn.primary {background: linear-gradient(180deg,#22c55e,#16a34a); color:#07130d; border-color:rgba(34,197,94,.65)}
+.btn.ghost {background:#0b1428;}
+.btn.full {width:100%; text-align:center}
+
+/* Quick tiles */
+.tile {
+  display:flex; align-items:center; gap:12px; padding:14px;
+  background: #0b1428; border:1px solid rgba(255,255,255,.06); border-radius:14px;
+}
+.tile .icon {
+  width:38px; height:38px; border-radius:11px; display:grid; place-items:center; font-size:18px;
+  background: rgba(34,197,94,.12); color:#9af2b8; border:1px solid rgba(34,197,94,.3);
+}
+
+/* Auth panels (general estructura) */
+.auth {
+  max-width: 440px; margin: 40px auto; padding: 24px;
+  background: var(--card); border:1px solid rgba(255,255,255,.08); border-radius:18px;
+  box-shadow: 0 20px 60px rgba(2,6,23,.55), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.auth h1 {margin:0 0 6px 0; font-size:22px}
+.auth p {margin:0 0 16px 0; color:var(--muted)}
+.form .row {display:grid; gap:12px}
+.input {display:flex; flex-direction:column; gap:6px}
+.input label {font-size:13px; color:#cbd5e1}
+.input input {
+  width:100%; padding:12px 12px; border-radius:12px; background:#0b1326; color:#e5e7eb;
+  border:1px solid rgba(255,255,255,.08); outline:none;
+}
+.input input:focus {border-color:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.helper {font-size:12px; color:var(--muted)}
+.actions-auth {display:flex; gap:10px; align-items:center; justify-content:space-between; margin-top:12px}
+.link {color:#86efac; text-decoration:none}
+.link:hover {text-decoration:underline}
+
+/* Bottom bar solo móvil */
+.bottom {
+  position:fixed; bottom:10px; left:0; right:0;
+  display:none; pointer-events:none;
+}
+.bottom .inner {
+  margin:0 auto; max-width:480px; padding:6px; pointer-events:auto;
+  background: rgba(11,16,32,.7);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px; backdrop-filter: blur(8px);
+  display:flex; gap:8px;
+}
+@media (max-width: 768px){
+  .card {padding:16px}
+  .grid {grid-template-columns: repeat(6, 1fr)}
+  .brand small {display:none}
+  .bottom {display:block}
+}
+@media (min-width: 769px){
+  .span-6 {grid-column: span 6}
+  .span-4 {grid-column: span 4}
+  .span-3 {grid-column: span 3}
+}
+
+/* =========================
+   Tema clásico verde (auth)
+   ========================= */
+.theme-classic {
+  background-color: #eaf5ea !important; /* fondo verde claro */
+  color: #333;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  padding: 28px;
+  text-align: left;
+}
+
+.auth-card h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin: 0 0 18px 0;
+  color: #222;
+}
+
+.auth-card label {
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.auth-card .form-control {
+  height: auto;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+.btn-green {
+  background-color: #4caf50 !important;
+  color: #fff !important;
+  border: none !important;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 18px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.btn-green:hover {
+  background-color: #45a049 !important;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 14px;
+}
+
+@media (max-width: 640px) {
+  .auth-card { padding: 22px; border-radius: 10px; }
+  .auth-card h1 { font-size: 1.9rem; }
+}
+/* Forzar títulos de las tiles a blanco */
+.tile div > div:first-child {
+  color: #ffffff !important;
+  font-weight: 600; /* un poco más fuerte */
+}
+/* Forzar el título de la marca en la appbar a blanco */
+.appbar .brand {
+  color: #ffffff !important;
+}
+
+.appbar .brand small {
+  color: #d1d5db !important; /* un gris clarito para el subtítulo */
+}
+/* Centrar el contenido de la tarjeta de bienvenida */
+.card.intro {
+  text-align: center !important;
+}
+
+.card.intro .actions {
+  justify-content: center !important;
+}
+/* Inputs claros para login y registro en theme-classic */
+.theme-classic .auth-card .form-control {
+  background-color: #f0f7ff !important; /* azul muy suave */
+  border: 1px solid #cbd5e1;
+  color: #111827;
+  font-weight: 500;
+}
+
+.theme-classic .auth-card .form-control:focus {
+  background-color: #e8f2ff !important;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, .25);
+}
+/* Inputs claros para login y registro en theme-classic */
+.theme-classic .auth-card .form-control {
+  background-color: #f0f7ff !important; /* azul muy suave */
+  border: 1px solid #cbd5e1;
+  color: #111827;
+  font-weight: 500;
+}
+
+.theme-classic .auth-card .form-control:focus {
+  background-color: #e8f2ff !important;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, .25);
+}
+/* ====== AUTH HERO (CERT UCOL) ====== */
+.auth-hero {
+  --bg-1: #cfe7dc;         /* fondo pastel */
+  --bg-2: #b9d9cc;
+  --panel: #d0e8debb;      /* panel translúcido */
+  --label: #4a675d;        /* texto label */
+  --pill: #8cc0ad;         /* color de input */
+  --pill-text: #1f2937;
+  --cta: #2f6e59;          /* botón principal */
+  --cta-hover: #285e4d;
+  background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-top {
+  position: relative;
+  height: 220px;           /* alto cabecera móvil */
+  background: #0b1c18;
+  overflow: hidden;
+}
+.hero-top .hero-img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: .45;            /* filtro oscuro sobre foto */
+}
+.hero-top .hero-title {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; color: #0b1c18;
+  text-shadow: 0 1px 0 #e7fff6, 0 2px 20px rgba(255,255,255,.35);
+}
+.hero-title h1 {
+  margin: 0; line-height: 1;
+  letter-spacing: .04em;
+  font-weight: 900; font-size: 34px;
+}
+.hero-title small {
+  display:block; margin-top: 6px; font-weight: 600; color:#0b1c18;
+}
+
+/* Onda separadora */
+.hero-wave {
+  display:block; width:100%; margin-top:-1px;
+}
+
+/* Panel principal */
+.sheet {
+  max-width: 420px; margin: -30px auto 32px;  /* superpone al hero */
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.15);
+  padding: 22px 20px;
+}
+
+/* Títulos dentro del panel */
+.sheet .sheet-title {
+  text-align:center; margin: 6px 0 16px 0;
+  color: #285e4d; font-weight: 800; letter-spacing:.02em;
+}
+
+/* Labels e inputs “pill” */
+.sheet .form-label { color: var(--label); font-weight: 800; }
+.pill {
+  width: 100%;
+  border: none;
+  background: var(--pill);
+  color: var(--pill-text);
+  padding: 14px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  outline: none;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+}
+.pill::placeholder { color: rgba(31,41,55,.65); }
+.pill:focus {
+  box-shadow: 0 0 0 3px rgba(47,110,89,.25), inset 0 0 0 2px rgba(255,255,255,.35);
+}
+
+/* Botón principal “pill” */
+.btn-pill {
+  display:block; width:100%;
+  border:none; border-radius:999px;
+  padding: 14px 18px; font-weight: 800; letter-spacing:.02em;
+  background: var(--cta); color: #fff;
+  box-shadow: 0 8px 20px rgba(47,110,89,.35);
+}
+.btn-pill:hover { background: var(--cta-hover); }
+
+/* Acciones secundarias en línea (registro/login link) */
+.sheet .inline-actions {
+  display:flex; gap:12px; align-items:center; justify-content:center;
+  margin-top: 8px;
+}
+.sheet .inline-actions a {
+  color: #2f6e59; font-weight:800; text-decoration:none;
+}
+.sheet .inline-actions a:hover { text-decoration: underline; }
+
+/* Desktop tweaks */
+@media (min-width: 768px){
+  .hero-top { height: 260px; }
+  .hero-title h1 { font-size: 42px; }
+  .sheet { margin-top: -40px; padding: 26px 24px; }
+}
+
+/* Asegurar barra superior si la usas en estas vistas */
+.auth-hero .appbar { display:none; } /* opcional: oculta la appbar aquí */
+/* Ajustar color de título/subtítulo en hero CERT UCOL */
+.hero-title h1 {
+  color: #41d8a8 !important;   /* verde principal */
+  text-shadow: #28453c !important; /* quitamos sombra blanca */
+}
+
+.hero-title small {
+  color: #48ecb8 !important;   /* verde principal */
+  text-shadow: none !important;
+}
+
+/* === Unificar paleta del index con la del login (pastel/verde) === */
+:root {
+  --bg:#cfe7dc;        /* fondo pastel */
+  --card:#ffffffbb;    /* panel translúcido claro */
+  --muted:#285e4d;     /* textos secundarios */
+  --accent:#2f6e59;    /* botón principal */
+  --accent-2:#285e4d;  /* hover principal */
+  --surface:#8cc0ad;   /* ghost/pill claro */
+  --ring:#1f2937;
+}
+
+/* Fondo general del dashboard (igual al login pero sin ocultar appbar) */
+.dashboard-hero {
+  background: linear-gradient(180deg, #cfe7dc, #b9d9cc);
+  min-height: 100vh;
+  padding: 0 0 24px 0;
+}
+
+/* Reusar la tarjeta translúcida del login */
+.dashboard-hero .sheet { /* ya tienes .sheet, solo nos aseguramos del ancho con inline en el EJS */ }
+
+/* Tarjetas del grid con estética clara */
+.card{
+  background: var(--card) !important;
+  color: var(--muted);
+  border-color: rgba(0,0,0,.05);
+}
+.card h2{ color: var(--accent) !important; }
+.card p { color: var(--muted); }
+
+/* Botones modernos dentro de cards con la misma paleta */
+.card .btn.primary{
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+}
+.card .btn.primary:hover{ background: var(--accent-2); }
+.card .btn.ghost{
+  background: var(--surface);
+  color: #1f2937;
+  border-color: transparent;
+}
+
+/* Botones “pill” para acciones principales del panel (arriba) */
+.btn-pill{
+  display:block; width:100%;
+  border:none; border-radius:999px;
+  padding:14px 18px; font-weight:800; letter-spacing:.02em;
+  background:#2f6e59; color:#fff;
+  box-shadow:0 8px 20px rgba(47,110,89,.25);
+}
+.btn-pill:hover{ background:#285e4d; }
+
+.btn-ghost-pill{
+  display:block; width:100%;
+  border:none; border-radius:999px;
+  padding:14px 18px; font-weight:800; letter-spacing:.02em;
+  background:#8cc0ad; color:#1f2937;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+}
+.btn-ghost-pill:hover{ filter: brightness(.97); }
+
+/* Mantener la appbar visible en dashboard */
+.dashboard-hero .appbar{ display:block; }
+
+/* Flash messages bien visibles */
+.flash-message {
+  position: relative;
+  z-index: 50; /* siempre sobre el panel */
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-align: center;
+  background: #2f6e59; /* verde principal */
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,.15);
+}
+.flash-message.success { background:#2f6e59; }
+.flash-message.error   { background:#dc3545; }
+
+/* Forzar todos los iconos (Bootstrap Icons) a blanco */
+.icon-white, .icon-white i {
+  color: #ffffff !important;
+  font-size: 1.5rem; /* tamaño ajustable */
+}
+
