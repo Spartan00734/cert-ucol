@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro de Pacientes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e8f5e9;
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+      max-width: 900px;
+      width: 100%;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      background: #2e7d32;
+      border-color: #2e7d32;
+    }
+
+    .btn-primary:hover {
+      background: #1b5e20;
+    }
+
+    fieldset {
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    legend {
+      font-size: 1.05rem;
+      color: #2e7d32;
+      width: auto;
+      padding: 0 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- 🚨 BLOQUE DE ALERT -->
+    <% if (flash) { %>
+      <div class="alert alert-<%= flash.type %> alert-dismissible fade show" role="alert">
+        <%= flash.message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+    <!-- 🚨 FIN DEL BLOQUE DE ALERT -->
+
+    <h2 class="text-center">Registro de Pacientes</h2>
+
+    <% const FD  = (typeof formData !== 'undefined' && formData) ? formData : {}; %>
+    <% const ERR = (typeof errors   !== 'undefined' && errors)   ? errors   : [];  %>
+
+    <% if (ERR.length) { %>
+      <div class="alert alert-danger" role="alert">
+        <strong>Corrige los siguientes campos:</strong>
+        <ul class="mb-0">
+          <% ERR.forEach(e => { %>
+            <li><%= e.msg %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+
+    <form action="/guardar-paciente" method="POST" novalidate>
+      <% if (typeof csrfToken !== 'undefined') { %>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <% } %>
+
+      <!-- JSON con lesionesPorZona para usar en JS -->
+      <input
+        type="hidden"
+        id="lesionesJSON"
+        value='<%- JSON.stringify(lesionesPorZona || {}) %>'>
+
+      <!-- Datos del paciente -->
+      <fieldset class="mb-3">
+        <legend>Datos del paciente</legend>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre completo</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              class="form-control"
+              required
+              maxlength="120"
+              autocomplete="name"
+              value="<%= FD.nombre || '' %>">
+          </div>
+
+          <div class="col-md-3">
+            <label for="edad" class="form-label">Edad</label>
+            <input
+              type="number"
+              id="edad"
+              name="edad"
+              class="form-control"
+              required
+              min="0"
+              max="120"
+              value="<%= FD.edad || '' %>">
+          </div>
+
+          <div class="col-md-3">
+            <label for="genero" class="form-label">Género</label>
+            <select id="genero" name="genero" class="form-select" required>
+              <% const gen = FD.genero || ''; %>
+              <option value="" disabled <%= !gen ? 'selected' : '' %>>Selecciona…</option>
+              <option value="masculino" <%= gen === 'masculino' ? 'selected' : '' %>>Masculino</option>
+              <option value="femenino"  <%= gen === 'femenino'  ? 'selected' : '' %>>Femenino</option>
+              <option value="otro"      <%= gen === 'otro'      ? 'selected' : '' %>>Otro</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label for="estado_civil" class="form-label">Estado civil</label>
+            <select id="estado_civil" name="estado_civil" class="form-select">
+              <% const ec = FD.estado_civil || ''; %>
+              <option value="" <%= !ec ? 'selected' : '' %>>No especificado</option>
+              <option value="soltero"      <%= ec === 'soltero'      ? 'selected' : '' %>>Soltero(a)</option>
+              <option value="casado"       <%= ec === 'casado'       ? 'selected' : '' %>>Casado(a)</option>
+              <option value="union_libre"  <%= ec === 'union_libre'  ? 'selected' : '' %>>Unión libre</option>
+              <option value="divorciado"   <%= ec === 'divorciado'   ? 'selected' : '' %>>Divorciado(a)</option>
+              <option value="viudo"        <%= ec === 'viudo'        ? 'selected' : '' %>>Viudo(a)</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label for="delegacion" class="form-label">Delegación</label>
+            <input
+              id="delegacion"
+              name="delegacion"
+              class="form-control"
+              required
+              value="<%= FD.delegacion || '' %>"
+              placeholder="Ej. Colima, Tecomán, Manzanillo…">
+          </div>
+
+          <div class="col-md-4">
+            <label for="ocupacion" class="form-label">Ocupación</label>
+            <input
+              type="text"
+              id="ocupacion"
+              name="ocupacion"
+              class="form-control"
+              required
+              maxlength="100"
+              placeholder="Ej. Estudiante / Trabajador"
+              value="<%= FD.ocupacion || '' %>">
+          </div>
+
+          <div class="col-md-4">
+            <label for="numero_cuenta" class="form-label">Número de cuenta (opcional)</label>
+            <input
+              type="text"
+              id="numero_cuenta"
+              name="numero_cuenta"
+              class="form-control"
+              maxlength="40"
+              value="<%= FD.numero_cuenta || '' %>">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Signos vitales -->
+      <fieldset class="mb-3">
+        <legend>Signos vitales</legend>
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label for="ta" class="form-label">Tensión arterial (mmHg)</label>
+            <input
+              type="text"
+              id="ta"
+              name="ta"
+              class="form-control"
+              required
+              pattern="[0-9]{2,3}/[0-9]{2,3}"
+              placeholder="Ej. 120/80"
+              value="<%= FD.ta || '' %>">
+          </div>
+
+          <div class="col-md-3">
+            <label for="fc" class="form-label">F.C. (lpm)</label>
+            <input
+              type="number"
+              id="fc"
+              name="fc"
+              class="form-control"
+              required
+              min="0"
+              max="250"
+              inputmode="numeric"
+              placeholder="Ej. 78"
+              value="<%= FD.fc || '' %>">
+          </div>
+
+          <div class="col-md-3">
+            <label for="fr" class="form-label">F.R. (rpm)</label>
+            <input
+              type="number"
+              id="fr"
+              name="fr"
+              class="form-control"
+              required
+              min="0"
+              max="80"
+              inputmode="numeric"
+              placeholder="Ej. 16"
+              value="<%= FD.fr || '' %>">
+          </div>
+
+          <div class="col-md-3">
+            <label for="rp" class="form-label">R.P. (opcional)</label>
+            <input
+              type="text"
+              id="rp"
+              name="rp"
+              class="form-control"
+              placeholder="Ej. 2 s"
+              value="<%= FD.rp || '' %>">
+          </div>
+
+          <div class="col-md-3">
+            <label for="temperatura" class="form-label">Temperatura (°C)</label>
+            <input
+              type="number"
+              id="temperatura"
+              name="temperatura"
+              class="form-control"
+              required
+              step="0.1"
+              min="30"
+              max="45"
+              inputmode="decimal"
+              placeholder="Ej. 36.7"
+              value="<%= FD.temperatura || '' %>">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Estado clínico -->
+      <fieldset class="mb-3">
+        <legend>Estado clínico</legend>
+        <div class="row g-3">
+          <!-- Zona de lesión -->
+          <div class="col-md-4">
+            <label class="form-label" for="zonaLesionSelect">Zona del cuerpo</label>
+            <select
+              class="form-select"
+              name="zona_lesion"
+              id="zonaLesionSelect"
+              required>
+              <option value="" disabled selected>Selecciona zona…</option>
+              <% (zonasLesion || []).forEach(z => { %>
+                <option value="<%= z %>"><%= z %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <!-- Tipo de lesión -->
+          <div class="col-md-4">
+            <label class="form-label" for="tipoLesionSelect">Tipo de lesión</label>
+            <select
+              class="form-select"
+              name="lesion"
+              id="tipoLesionSelect"
+              required>
+              <option value="" disabled selected>Selecciona primero una zona…</option>
+            </select>
+          </div>
+
+          <!-- Glasgow -->
+          <div class="col-md-4">
+            <label for="glasgow" class="form-label">Escala de Glasgow</label>
+            <select id="glasgow" name="glasgow" class="form-select" required>
+              <% const gla = FD.glasgow ? Number(FD.glasgow) : 15; %>
+              <% for (let i = 15; i >= 3; i--) { %>
+                <option value="<%= i %>" <%= gla === i ? 'selected' : '' %>><%= i %></option>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label for="estado" class="form-label">Estado (opcional)</label>
+            <input
+              type="text"
+              id="estado"
+              name="estado"
+              class="form-control"
+              maxlength="80"
+              placeholder="Ej. Estable / Crítico"
+              value="<%= FD.estado || '' %>">
+          </div>
+
+          <div class="col-md-9">
+            <label for="terapeuta" class="form-label">Terapeuta / Atendió (opcional)</label>
+            <input
+              type="text"
+              id="terapeuta"
+              name="terapeuta"
+              class="form-control"
+              maxlength="120"
+              value="<%= FD.terapeuta || '' %>">
+          </div>
+
+          <div class="col-12">
+            <label for="pertenencias" class="form-label">Pertenencias (opcional)</label>
+            <textarea
+              id="pertenencias"
+              name="pertenencias"
+              class="form-control"
+              rows="2"
+              maxlength="300"
+              placeholder="Describe pertenencias entregadas o resguardadas"><%= FD.pertenencias || '' %></textarea>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Responsable -->
+      <fieldset class="mb-3">
+        <legend>Responsable</legend>
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label for="responsable" class="form-label">Nombre del responsable</label>
+            <input
+              type="text"
+              id="responsable"
+              name="responsable"
+              class="form-control"
+              required
+              maxlength="120"
+              autocomplete="name"
+              value="<%= FD.responsable || '' %>">
+          </div>
+          <div class="col-md-4">
+            <label for="parentesco" class="form-label">Parentesco</label>
+            <select id="parentesco" name="parentesco" class="form-select" required>
+              <% const par = FD.parentesco || ''; %>
+              <option value="" disabled <%= !par ? 'selected' : '' %>>Selecciona…</option>
+              <option value="padre"    <%= par === 'padre'    ? 'selected' : '' %>>Padre/Madre</option>
+              <option value="hermano"  <%= par === 'hermano'  ? 'selected' : '' %>>Hermano(a)</option>
+              <option value="hijo"     <%= par === 'hijo'     ? 'selected' : '' %>>Hijo(a)</option>
+              <option value="conyuge"  <%= par === 'conyuge'  ? 'selected' : '' %>>Cónyuge</option>
+              <option value="otro"     <%= par === 'otro'     ? 'selected' : '' %>>Otro</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="btn btn-primary w-100">Guardar</button>
+      <a href="/materiales" class="btn btn-outline-secondary w-100 mt-2"> Siguiente </a>
+      <a href="/" class="btn btn-secondary w-100 mt-2">⬅ Menú</a>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Validación Bootstrap + evitar doble envío
+    (function () {
+      'use strict';
+      const form = document.querySelector('form');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      form.addEventListener('submit', function (e) {
+        if (!form.checkValidity()) {
+          e.preventDefault();
+          e.stopPropagation();
+        } else {
+          submitBtn.disabled = true;
+        }
+        form.classList.add('was-validated');
+      }, false);
+    })();
+
+    // Auto-cerrar alert en 3.5s
+    setTimeout(() => {
+      const el = document.querySelector('.alert.alert-dismissible');
+      if (!el) return;
+      try {
+        const alert = bootstrap.Alert.getOrCreateInstance(el);
+        alert.close();
+      } catch (e) {
+        el.classList.remove('show');
+        el.addEventListener('transitionend', () => el.remove());
+      }
+    }, 3500);
+
+    // ===== Catálogo base de lesiones por zona (sugerencias) =====
+    const LESIONES_BASE = {
+      "General": [
+        "Contusión Leve",
+        "Contusión Moderada",
+        "Contusión Severa",
+        "Corte Superficial",
+        "Corte Profundo",
+        "Esguince",
+        "Fractura Abierta",
+        "Fractura Cerrada"
+      ],
+      "Cabeza y cuello": [
+        "Traumatismo Craneoencefálico",
+        "Fractura de cráneo",
+        "Herida en cuero cabelludo",
+        "Lesión cervical",
+        "Herida facial",
+        "Contusión facial",
+        "Fractura maxilar",
+        "Cuerpo extraño en ojo"
+      ],
+      "Tórax": [
+        "Contusión torácica",
+        "Fractura de costillas",
+        "Neumotórax sospechado",
+        "Herida penetrante en tórax",
+        "Dolor torácico súbito",
+        "Traumatismo de tórax cerrado",
+        "Dificultad respiratoria aguda",
+        "Lesión esternal"
+      ],
+      "Abdomen y pelvis": [
+        "Dolor abdominal agudo",
+        "Herida penetrante abdominal",
+        "Sospecha de hemorragia interna",
+        "Trauma cerrado abdominal",
+        "Dolor en pelvis",
+        "Fractura de pelvis",
+        "Contusión abdominal",
+        "Distensión abdominal"
+      ],
+      "Columna vertebral": [
+        "Dolor lumbar agudo",
+        "Dolor dorsal agudo",
+        "Sospecha de lesión medular",
+        "Caída desde altura",
+        "Dolor cervical con trauma",
+        "Rigidez de cuello post-trauma",
+        "Trauma directo en columna",
+        "Lumbalgia incapacitante"
+      ],
+      "Extremidades superiores": [
+        "Fractura de húmero",
+        "Fractura de radio/cúbito",
+        "Luxación de hombro",
+        "Luxación de codo",
+        "Herida en mano",
+        "Contusión en brazo",
+        "Esguince de muñeca",
+        "Amputación parcial de dedo"
+      ],
+      "Extremidades inferiores": [
+        "Fractura de fémur",
+        "Fractura de tibia/peroné",
+        "Esguince de tobillo",
+        "Luxación de rodilla",
+        "Contusión en pierna",
+        "Herida en pie",
+        "Dolor intenso en rodilla",
+        "Amputación parcial de pie"
+      ]
+    };
+
+    // ===== Lógica de zonas -> tipos de lesión =====
+    const lesionesJSONInput = document.getElementById('lesionesJSON');
+    let LESIONES_POR_ZONA = {};
+    try {
+      LESIONES_POR_ZONA = JSON.parse(lesionesJSONInput?.value || '{}');
+    } catch (e) {
+      console.error('Error al parsear lesionesPorZona:', e);
+    }
+
+    function obtenerLesionesZona(zona) {
+      const base = LESIONES_BASE[zona] || [];
+      const db   = (LESIONES_POR_ZONA[zona] || []).map(l => l.nombre);
+      const merged = [...base];
+      db.forEach(n => {
+        if (!merged.includes(n)) merged.push(n);
+      });
+      return merged;
+    }
+
+    const zonaSelect   = document.getElementById('zonaLesionSelect');
+    const lesionSelect = document.getElementById('tipoLesionSelect');
+
+    function poblarLesiones(zona) {
+      lesionSelect.innerHTML = '';
+
+      const opciones = obtenerLesionesZona(zona);
+
+      const optDefault = document.createElement('option');
+      optDefault.disabled = true;
+      optDefault.selected = true;
+      optDefault.textContent = opciones.length
+        ? 'Selecciona tipo de lesión…'
+        : 'No hay opciones predefinidas para esta zona';
+      lesionSelect.appendChild(optDefault);
+
+      opciones.forEach(nombre => {
+        const opt = document.createElement('option');
+        opt.value = nombre;
+        opt.textContent = nombre;
+        lesionSelect.appendChild(opt);
+      });
+
+      lesionSelect.required = true;
+    }
+
+    if (zonaSelect && lesionSelect) {
+      zonaSelect.addEventListener('change', (e) => {
+        const zona = e.target.value;
+        if (!zona) return;
+        poblarLesiones(zona);
+      });
+    }
+  </script>
+</body>
+</html>
